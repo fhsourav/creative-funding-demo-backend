@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: "Creative Funding Demo"
+  datasource: # Database Connection
+    url: "jdbc:postgresql://localhost:5432/db_creative_platform_demo"
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa: # JPA Configuration
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: "org.hibernate.dialect.PostgreSQLDialect"
