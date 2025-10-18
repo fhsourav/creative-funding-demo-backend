@@ -2,8 +2,10 @@ package com.acescribbles.creative_funding_demo.domain.entities;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
@@ -25,20 +27,29 @@ public class User {
 	@Column(nullable = false, unique = true, length = 30)
 	private String handle;
 
-	@Column(nullable = false)
-	private LocalDateTime createdAt;
+	@ManyToMany
+	@JoinTable(
+			name = "user_roles",
+			joinColumns = @JoinColumn(name = "user_id"),
+			inverseJoinColumns = @JoinColumn(name = "role_id")
+	)
+	private Set<Role> roles = new HashSet<>();
 
-	@Column(nullable = false)
-	private LocalDateTime lastUpdatedAt;
+	@Column(nullable = false, updatable = false)
+	private Instant createdAt;
 
-	public User(long id, String email, String passwordHash, String displayName, String handle, LocalDateTime createdAt, LocalDateTime lastUpdatedAt) {
+	@Column
+	private Instant lastModifiedAt;
+
+	public User(long id, String email, String passwordHash, String displayName, String handle, Set<Role> roles, Instant createdAt, Instant lastModifiedAt) {
 		this.id = id;
 		this.email = email;
 		this.passwordHash = passwordHash;
 		this.displayName = displayName;
 		this.handle = handle;
+		this.roles = roles;
 		this.createdAt = createdAt;
-		this.lastUpdatedAt = lastUpdatedAt;
+		this.lastModifiedAt = lastModifiedAt;
 	}
 
 	public User() {
@@ -84,41 +95,49 @@ public class User {
 		this.handle = handle;
 	}
 
-	public LocalDateTime getCreatedAt() {
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
+
+	public Instant getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(LocalDateTime createdAt) {
+	public void setCreatedAt(Instant createdAt) {
 		this.createdAt = createdAt;
 	}
 
-	public LocalDateTime getLastUpdatedAt() {
-		return lastUpdatedAt;
+	public Instant getLastUpdatedAt() {
+		return lastModifiedAt;
 	}
 
-	public void setLastUpdatedAt(LocalDateTime lastUpdatedAt) {
-		this.lastUpdatedAt = lastUpdatedAt;
+	public void setLastUpdatedAt(Instant lastModifiedAt) {
+		this.lastModifiedAt = lastModifiedAt;
 	}
 
 	@Override
 	public boolean equals(Object o) {
 		if (o == null || getClass() != o.getClass()) return false;
 		User user = (User) o;
-		return id == user.id && Objects.equals(email, user.email) && Objects.equals(passwordHash, user.passwordHash) && Objects.equals(displayName, user.displayName) && Objects.equals(handle, user.handle) && Objects.equals(createdAt, user.createdAt);
+		return id == user.id && Objects.equals(email, user.email) && Objects.equals(passwordHash, user.passwordHash) && Objects.equals(displayName, user.displayName) && Objects.equals(handle, user.handle) && Objects.equals(createdAt, user.createdAt) && Objects.equals(lastModifiedAt, user.lastModifiedAt);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id, email, passwordHash, displayName, handle, createdAt);
+		return Objects.hash(id, email, passwordHash, displayName, handle, createdAt, lastModifiedAt);
 	}
 
 	@PrePersist
 	protected void onCreate() {
-		this.createdAt = LocalDateTime.now();
+		this.createdAt = Instant.now();
 	}
 
 	@PreUpdate
 	protected void onUpdate() {
-		this.lastUpdatedAt = LocalDateTime.now();
+		this.lastModifiedAt = Instant.now();
 	}
 }
