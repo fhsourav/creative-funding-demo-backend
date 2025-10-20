@@ -19,12 +19,15 @@ repositories {
 }
 
 dependencies {
+	// https://mvnrepository.com/artifact/me.paulschwarz/spring-dotenv
+	implementation("me.paulschwarz:spring-dotenv:4.0.0")
+
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.flywaydb:flyway-core")
 	implementation("org.flywaydb:flyway-database-postgresql")
-	// https://mvnrepository.com/artifact/me.paulschwarz/spring-dotenv
-	implementation("me.paulschwarz:spring-dotenv:4.0.0")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("org.postgresql:postgresql")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
