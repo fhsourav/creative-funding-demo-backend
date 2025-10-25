@@ -1,10 +1,10 @@
 package com.acescribbles.creative_funding_demo.services;
 
-import com.acescribbles.creative_funding_demo.domain.entities.User;
-import com.acescribbles.creative_funding_demo.domain.records.UserRecord;
+import com.acescribbles.creative_funding_demo.domain.records.AuthResponse;
+import com.acescribbles.creative_funding_demo.domain.records.SignupRequest;
 
 public interface UserService {
 
-	public User registerNewSubscriber(UserRecord userRecord);
+	public AuthResponse registerNewSubscriber(SignupRequest signupRequest);
 
 }

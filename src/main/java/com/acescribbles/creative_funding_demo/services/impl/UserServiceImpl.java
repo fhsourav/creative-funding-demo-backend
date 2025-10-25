@@ -3,7 +3,8 @@ package com.acescribbles.creative_funding_demo.services.impl;
 import com.acescribbles.creative_funding_demo.domain.entities.Role;
 import com.acescribbles.creative_funding_demo.domain.entities.User;
 import com.acescribbles.creative_funding_demo.domain.enums.RoleType;
-import com.acescribbles.creative_funding_demo.domain.records.UserRecord;
+import com.acescribbles.creative_funding_demo.domain.records.AuthResponse;
+import com.acescribbles.creative_funding_demo.domain.records.SignupRequest;
 import com.acescribbles.creative_funding_demo.repositories.RoleRepository;
 import com.acescribbles.creative_funding_demo.repositories.UserRepository;
 import com.acescribbles.creative_funding_demo.services.UserService;
@@ -12,7 +13,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -30,26 +30,34 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional
-	public User registerNewSubscriber(UserRecord userRecord) {
-		if (userRepository.findByEmail(userRecord.email()).isPresent()) {
-			throw new IllegalArgumentException("Subscriber already exists with email: " + userRecord.email());
+	public AuthResponse registerNewSubscriber(SignupRequest signupRequest) {
+		if (userRepository.findByEmail(signupRequest.email()).isPresent()) {
+			throw new IllegalArgumentException("Subscriber already exists with email: " + signupRequest.email());
 		}
 
-		String hashedPassword = passwordEncoder.encode(userRecord.password());
-		String roleName = RoleType.SUBSCRIBER.name();
-		Role role = roleRepository.findByName(roleName)
-				.orElseThrow(() -> new IllegalStateException("Required role not found: " + roleName));
+		String hashedPassword = passwordEncoder.encode(signupRequest.password());
+		Role role = roleRepository.findByName(RoleType.SUBSCRIBER)
+				.orElseThrow(() -> new IllegalStateException("Required role not found: " + RoleType.SUBSCRIBER.name()));
 
 		User newUser = new User();
-		newUser.setEmail(userRecord.email());
+		newUser.setEmail(signupRequest.email());
 		newUser.setPasswordHash(hashedPassword);
-		newUser.setHandle(userRecord.handle());
-		newUser.setDisplayName(userRecord.displayName());
+		newUser.setHandle(signupRequest.handle());
+		newUser.setDisplayName(signupRequest.displayName());
 
 		Set<Role> roles = new HashSet<>();
 		roles.add(role);
 		newUser.setRoles(roles);
 
-		return userRepository.save(newUser);
+		User savedUser = userRepository.save(newUser);
+
+		return new AuthResponse(
+				savedUser.getId(),
+				savedUser.getEmail(),
+				savedUser.getDisplayName(),
+				savedUser.getHandle(),
+				savedUser.getCreatedAt(),
+				savedUser.getLastModifiedAt()
+		);
 	}
 }

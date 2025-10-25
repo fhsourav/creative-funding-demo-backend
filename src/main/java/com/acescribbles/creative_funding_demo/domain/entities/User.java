@@ -38,7 +38,6 @@ public class User {
 	@Column(nullable = false, updatable = false)
 	private Instant createdAt;
 
-	@Column
 	private Instant lastModifiedAt;
 
 	public User(long id, String email, String passwordHash, String displayName, String handle, Set<Role> roles, Instant createdAt, Instant lastModifiedAt) {
@@ -111,11 +110,11 @@ public class User {
 		this.createdAt = createdAt;
 	}
 
-	public Instant getLastUpdatedAt() {
+	public Instant getLastModifiedAt() {
 		return lastModifiedAt;
 	}
 
-	public void setLastUpdatedAt(Instant lastModifiedAt) {
+	public void setLastModifiedAt(Instant lastModifiedAt) {
 		this.lastModifiedAt = lastModifiedAt;
 	}
 

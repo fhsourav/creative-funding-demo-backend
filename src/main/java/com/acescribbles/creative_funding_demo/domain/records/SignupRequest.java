@@ -6,9 +6,7 @@ import jakarta.validation.constraints.Size;
 
 import java.time.Instant;
 
-public record UserRecord(
-
-		long id,
+public record SignupRequest(
 
 		@NotBlank(message = "Email is required.")
 		@Email(message = "Must be a valid email address.")
@@ -18,12 +16,10 @@ public record UserRecord(
 		@Size(min = 8, message = "Password must be at least 8 characters long.")
 		String password,
 
+		@NotBlank(message = "Display Name is required.")
 		String displayName,
 
-		String handle,
-
-		Instant createdAt,
-
-		Instant lastModifiedAt
+		@NotBlank(message = "Handle is required.")
+		String handle
 
 ) { }
