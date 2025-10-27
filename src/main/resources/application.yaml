@@ -7,7 +7,7 @@ spring:
     password: ${DB_PASSWORD}
   jpa: # JPA Configuration
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     open-in-view: false
     show-sql: true
     properties:
